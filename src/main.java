@@ -7,8 +7,17 @@ import java.util.Scanner;
 
 public class main {
     private static int flag=0;//未被加载过,flag=0;如果系统已经被加载过(回到主菜单),flag=1
-    private static void getData(){
+    private static void getDataRei(){
+        try {
+            BufferedReader br=new BufferedReader(new FileReader("ReiStaff.txt"));
+            String line="";
+            String tmp="";
+            while(tmp!="\n" ){
 
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     private static void welcome(){
         System.out.println("欢迎使用财务报销管理系统,请输入你要执行的操作编号.");
@@ -44,7 +53,7 @@ public class main {
         System.out.println("2.审批人员管理");
         System.out.println("0.返回主菜单");
         System.out.println("请选择:");
-        int temp=-1;
+        int temp = -1;
         while(true){
             Scanner scanner=new Scanner(System.in);
             temp=scanner.nextInt();
@@ -68,7 +77,7 @@ public class main {
 
     public static void main(String argc[]){
         //TODO:读入相关内容
-        getData();
+        getDataRei();
         while(true){
             welcome();//主菜单什么的
         }
