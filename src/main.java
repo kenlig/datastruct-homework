@@ -1,13 +1,11 @@
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
-    private static int flag=0;//未被加载过,flag=0;如果系统已经被加载过(回到主菜单),flag=1
+    //通用函数
     //ArrayLists
     private static ArrayList<ReiStaff> reiStaffs= new ArrayList<>();
     private static ArrayList<AppStaff> appStaffs= new ArrayList<>();
@@ -38,6 +36,15 @@ public class main {
             e.printStackTrace();
         }
     }
+    //以下是保存系统内容的函数
+    private static void saveInfoToFiles(){
+        for(int i=0;i<reiStaffs.size();i++){
+            reiStaffs.get(i).saveInFile();
+        }
+        for(int i=0;i<appStaffs.size();i++){
+            appStaffs.get(i).saveInFile();
+        }
+    }
     //menus
     private static void welcome(){//主菜单
         System.out.println("欢迎使用财务报销管理系统,请输入你要执行的操作编号.");
@@ -63,11 +70,11 @@ public class main {
             //报销管理
         }
         else if(temp==0){
-            //TODO:保存的函数
+            saveInfoToFiles();
             System.exit(0);
         }
     }
-
+    //以下是人员管理系统的内容!
     private static void peopleManage() {//人员管理系统
         System.out.println("人员管理系统:");
         System.out.println("1.报销人员管理");
@@ -95,6 +102,8 @@ public class main {
             return ;
         }
     }
+
+    //以下是报销人员的内容!
     private static void reiStaffManage(){//报销人员管理系统
         System.out.println("报销人员管理:");
         System.out.println("1.查询报销人员");
@@ -192,12 +201,73 @@ public class main {
         reiStaffManage();
     }
 
-
-
-
-    private static void appStaffManage(){
-
+    //以下是审批人员的内容!
+    private static void appStaffManage(){//审批人员管理系统
+        System.out.println("审批人员管理:");
+        System.out.println("1.查询审批人员");
+        System.out.println("2.增加审批人员");
+        System.out.println("3.修改审批人员的信息");
+        System.out.println("4.删除审批人员");
+        System.out.println("0.返回上一层");
+        int temp = -1;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=scanner.nextInt();
+            if(temp!=1&&temp!=2&&temp!=0&&temp!=3&&temp!=4){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            getAppInfo();
+        }
+        else if(temp==2){
+            addAppStaff();
+        }
+        else if(temp==3){
+            editAppInfo();
+        }
+        else if (temp==4){
+            deleteAppStaff();
+        }else if(temp==0){
+            peopleManage();
+        }
     }
+    private static void getAppInfo(){
+        //查询审批人员
+        System.out.println("审批人员的信息为:");
+        for(int i=0;i<appStaffs.size();i++){
+            System.out.println("工号:"+appStaffs.get(i).getId()+
+                    " 姓名:"+appStaffs.get(i).getName() +
+                    " 手机号:"+appStaffs.get(i).getPhoneNumber()+
+                    " 角色:"+appStaffs.get(i).getRole());
+        }
+        appStaffManage();
+    }
+    private static void addAppStaff(){
+        System.out.println("请输入增加审批人员的个数:");
+        int temp=-1;
+        Scanner scanner=new Scanner(System.in);
+        temp=scanner.nextInt();
+        for(int i=0;i<temp;i++) {
+            System.out.println("请输入第"+(i+1)+"个人的工号:");
+            Scanner scannerId=new Scanner(System.in);
+            String id=scannerId.next();
+            System.out.println("请输入第"+(i+1)+"个人的姓名:");
+            String name=scannerId.next();
+            System.out.println("请输入第"+(i+1)+"个人的手机号:");
+            String phoneNumber=scannerId.next();
+            System.out.println("请输入第"+(i+1)+"个人的角色");
+            String role=scannerId.next();
+            appStaffs.add(new AppStaff(id,name,phoneNumber,role));
+        }
+        System.out.println("添加成功!即将返回上一层!");
+        appStaffManage();
+    }
+    private static void editAppInfo(){}
+    private static void deleteAppStaff(){}
     public static void main(String argc[]){
         //getDataRei();
         //getDataApp();
