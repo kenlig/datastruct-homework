@@ -298,7 +298,7 @@ public class main {
             if(appStaffs.get(i).getId().equals(temp)){
                 appStaffs.remove(i);
                 System.out.println("删除成功!");
-                reiStaffManage();
+                appStaffManage();
             }
         }
         System.out.println("查找失败,没有这个人!");
@@ -312,33 +312,3 @@ public class main {
         }
     }
 }
-/*这里是可变数组的代码
-        ArrayList<Staff> s=new ArrayList<Staff>();
-        for(int i=0;i<10;i++){
-            s.add(new Staff(i+"","宇新","13012341234"));
-        }
-        for(int i=0;i<s.size();i++){
-            s.get(i).saveInFile();
-        }
-带条件删除
-        ArrayList<Staff> s=new ArrayList<Staff>();
-        for(int i=0;i<10;i++){
-            s.add(new Staff(i+"","宇新","13012341234"));
-        }
-        s.get(8).setId("---");
-        for(int i=0;i<10;i++){
-            if(s.get(i).getId()!="---") {
-                s.get(i).saveInFile();
-            }
-            else {
-                continue;
-            }
-        }
-
-       try {
-            BufferedReader br=new BufferedReader(new FileReader("ReiStaff.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        read d code
-        */
