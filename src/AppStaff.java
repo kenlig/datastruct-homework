@@ -22,7 +22,7 @@ public class AppStaff extends Staff implements FileIO{
     public void saveInFile() {
         String info=getId()+" "+getName()+" "+getPhoneNumber()+" "+getRole();
         try {
-            BufferedWriter bw=new BufferedWriter(new FileWriter("AppStaff.txt",true));
+            BufferedWriter bw=new BufferedWriter(new FileWriter("AppStaff.txt"));
             bw.write(info);
             bw.newLine();
             bw.close();

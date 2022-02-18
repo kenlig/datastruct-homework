@@ -42,7 +42,7 @@ public class Staff implements FileIO{
     public void saveInFile(){
         String info=getId()+" "+getName()+" "+getPhoneNumber();
         try {
-            BufferedWriter bw=new BufferedWriter(new FileWriter("Staff.txt",true));
+            BufferedWriter bw=new BufferedWriter(new FileWriter("Staff.txt"));
             bw.write(info);
             bw.newLine();
             bw.close();

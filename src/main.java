@@ -99,7 +99,7 @@ public class main {
             appStaffManage();
         }
         else if(temp==0){
-            return ;
+            welcome();
         }
     }
 
@@ -170,7 +170,7 @@ public class main {
         Scanner scanner=new Scanner(System.in);
         temp=scanner.next();
         for(int i=0;i<reiStaffs.size();i++){
-            if(reiStaffs.get(i).getId()==temp){
+            if(reiStaffs.get(i).getId().equals(temp)){
                 System.out.println("请输入"+temp+"的新姓名:");
                 Scanner scannerId=new Scanner(System.in);
                 String name=scannerId.next();
@@ -191,7 +191,7 @@ public class main {
         Scanner scanner=new Scanner(System.in);
         temp=scanner.next();
         for(int i=0;i<reiStaffs.size();i++){
-            if(reiStaffs.get(i).getId()==temp){
+            if(reiStaffs.get(i).getId().equals(temp)){
                 reiStaffs.remove(i);
                 System.out.println("删除成功!");
                 reiStaffManage();
@@ -259,22 +259,57 @@ public class main {
             String name=scannerId.next();
             System.out.println("请输入第"+(i+1)+"个人的手机号:");
             String phoneNumber=scannerId.next();
-            System.out.println("请输入第"+(i+1)+"个人的角色");
+            System.out.println("请输入第"+(i+1)+"个人的角色:");
             String role=scannerId.next();
             appStaffs.add(new AppStaff(id,name,phoneNumber,role));
         }
         System.out.println("添加成功!即将返回上一层!");
         appStaffManage();
     }
-    private static void editAppInfo(){}
-    private static void deleteAppStaff(){}
+    private static void editAppInfo(){
+        System.out.println("请输入需要修改的审批人员的工号:");
+        String temp;
+        Scanner scanner=new Scanner(System.in);
+        temp=scanner.next();
+        for(int i=0;i<appStaffs.size();i++){
+            if(appStaffs.get(i).getId().equals(temp)){
+                System.out.println("请输入"+temp+"的新姓名:");
+                Scanner scannerId=new Scanner(System.in);
+                String name=scannerId.next();
+                System.out.println("请输入"+temp+"的新手机号:");
+                String phoneNumber=scannerId.next();
+                System.out.println("请输入"+temp+"的新角色:");
+                String role=scannerId.next();
+                AppStaff tempApp=new AppStaff(temp,name,phoneNumber,role);
+                appStaffs.set(i,tempApp);
+                System.out.println("修改成功!");
+                appStaffManage();
+            }
+        }
+        System.out.println("查找失败,没有这个人!");
+        appStaffManage();
+    }
+    private static void deleteAppStaff(){
+        System.out.println("请输入被删除的审批人员的工号:");
+        String temp;
+        Scanner scanner=new Scanner(System.in);
+        temp=scanner.next();
+        for(int i=0;i<appStaffs.size();i++){
+            if(appStaffs.get(i).getId().equals(temp)){
+                appStaffs.remove(i);
+                System.out.println("删除成功!");
+                reiStaffManage();
+            }
+        }
+        System.out.println("查找失败,没有这个人!");
+        appStaffManage();
+    }
     public static void main(String argc[]){
-        //getDataRei();
-        //getDataApp();
-        //addReiStaff();
-        //while(true){
-        //    welcome();//主菜单什么的
-        //}
+        getDataRei();
+        getDataApp();
+        while(true){
+            welcome();//主菜单什么的
+        }
     }
 }
 /*这里是可变数组的代码
