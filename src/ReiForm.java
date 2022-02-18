@@ -35,6 +35,9 @@ public class ReiForm implements FileIO{
         this.status=status;
         this.appStaff=appStaff;
     }
+    public int getCountNum(){
+        return countNum;
+    }
     public String getId(){
         return id;
     }

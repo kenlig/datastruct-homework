@@ -10,6 +10,7 @@ public class main {
     //ArrayLists
     private static ArrayList<ReiStaff> reiStaffs= new ArrayList<>();
     private static ArrayList<AppStaff> appStaffs= new ArrayList<>();
+    private static HashMap<String,LineAuth> lineAuths=new HashMap<>();
     private static HashMap<String,ReiForm> reiForms=new HashMap<>();
     //下面是输入数据的函数
     private static void getDataRei(){
@@ -50,6 +51,18 @@ public class main {
             e.printStackTrace();
         }
     }
+    private static void getDataLineAuth(){
+        try {
+            BufferedReader br=new BufferedReader(new FileReader("LineAuth.txt"));
+            String tmp="";
+            while((tmp=br.readLine())!=null){
+                String[] data=tmp.split(" ");
+                lineAuths.put(data[0],new LineAuth(data[0],data[1],data[2],data[3]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     //以下是保存系统内容的函数
     private static void saveInfoToFiles(){
         for(int i=0;i<reiStaffs.size();i++){
@@ -59,6 +72,9 @@ public class main {
             appStaffs.get(i).saveInFile();
         }
         for(ReiForm value:reiForms.values()){
+            value.saveInFile();
+        }
+        for(LineAuth value:lineAuths.values()){
             value.saveInFile();
         }
     }
@@ -84,13 +100,89 @@ public class main {
             peopleManage();
         }
         else if(temp==2){
-            //报销管理
+            reiManage();
         }
         else if(temp==0){
             saveInfoToFiles();
             System.exit(0);
         }
     }
+    //以下是报销系统的内容
+    private static void reiManage() {
+        System.out.println("报销管理系统:");
+        System.out.println("1.审批人额度授权表管理");
+        System.out.println("2.报销单管理");
+        System.out.println("0.返回上一层");
+        System.out.println("请选择:");
+        int temp = -1;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=scanner.nextInt();
+            if(temp!=1&&temp!=2&&temp!=0){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            lineAuthManage();
+        }
+        else if(temp==2){
+            reiFormManage();
+        }
+        else if(temp==0){
+            welcome();
+        }
+    }
+    //审批人额度授权表管理函数
+    private static void lineAuthManage() {
+        System.out.println("审批人额度授权表管理:");
+        System.out.println("1.查询审批人额度授权表内容");
+        System.out.println("2.修改审批人额度授权表内容");
+        System.out.println("0.返回上一层");
+        int temp = -1;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=scanner.nextInt();
+            if(temp!=1&&temp!=0&&temp!=2){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            getLineAuthInfo();//todo：额度表内容好像不用cud吧
+        }
+        else if(temp==2){
+            editLineAuthInfo();//todo
+        }
+        else if(temp==0){
+            reiManage();
+        }
+    }
+    //查询审批人额度授权表内容
+    private static void getLineAuthInfo(){
+
+    }
+    //修改审批人额度授权表内容
+    private static void editLineAuthInfo(){
+
+    }
+    //报销单管理
+    private static void reiFormManage() {//todo:还没做完！
+        System.out.println("报销单管理:");
+        System.out.println("1.查看报销单列表");
+        System.out.println("2.创建报销单");
+        System.out.println("3.审批报销单");
+        System.out.println("4.修改报销单");
+        System.out.println("5.报销单据查询");
+        System.out.println("0.返回上一层");
+    }
+
+
+
     //以下是人员管理系统的内容!
     private static void peopleManage() {//人员管理系统
         System.out.println("人员管理系统:");
@@ -119,7 +211,6 @@ public class main {
             welcome();
         }
     }
-
     //以下是报销人员的内容!
     private static void reiStaffManage(){//报销人员管理系统
         System.out.println("报销人员管理:");
@@ -154,6 +245,7 @@ public class main {
             peopleManage();
         }
     }
+    //查询报销人员
     private static void getReiInfo(){//查询报销人员的信息
         System.out.println("报销人员的信息为:");
         for(int i=0;i<reiStaffs.size();i++){
@@ -163,6 +255,7 @@ public class main {
         }
         reiStaffManage();
     }
+    //增加报销人员
     private static void addReiStaff(){//增加报销人员
         System.out.println("请输入增加报销人员的个数:");
         int temp=-1;
@@ -181,6 +274,7 @@ public class main {
         System.out.println("添加成功!即将返回上一层!");
         reiStaffManage();
     }
+    //修改报销人员信息
     private static void editReiInfo(){//修改报销人员信息
         System.out.println("请输入需要修改的报销人员的工号:");
         String temp;
@@ -202,6 +296,7 @@ public class main {
         System.out.println("查找失败,没有这个人!");
         reiStaffManage();
     }
+    //删除报销人员
     private static void deleteReiStaff(){//删除报销人员
         System.out.println("请输入被删除的报销人员的工号:");
         String temp;
@@ -217,8 +312,8 @@ public class main {
         System.out.println("查找失败,没有这个人!");
         reiStaffManage();
     }
-
     //以下是审批人员的内容!
+    //审批人员管理
     private static void appStaffManage(){//审批人员管理系统
         System.out.println("审批人员管理:");
         System.out.println("1.查询审批人员");
@@ -252,6 +347,7 @@ public class main {
             peopleManage();
         }
     }
+    //查询审批人员
     private static void getAppInfo(){
         //查询审批人员
         System.out.println("审批人员的信息为:");
@@ -263,6 +359,7 @@ public class main {
         }
         appStaffManage();
     }
+    //增加审批人员
     private static void addAppStaff(){
         System.out.println("请输入增加审批人员的个数:");
         int temp=-1;
@@ -283,6 +380,7 @@ public class main {
         System.out.println("添加成功!即将返回上一层!");
         appStaffManage();
     }
+    //修改审批人员信息
     private static void editAppInfo(){
         System.out.println("请输入需要修改的审批人员的工号:");
         String temp;
@@ -306,6 +404,7 @@ public class main {
         System.out.println("查找失败,没有这个人!");
         appStaffManage();
     }
+    //删除审批人员
     private static void deleteAppStaff(){
         System.out.println("请输入被删除的审批人员的工号:");
         String temp;
@@ -321,10 +420,16 @@ public class main {
         System.out.println("查找失败,没有这个人!");
         appStaffManage();
     }
-    public static void main(String argc[]){
+    //初始化
+    public static void init(){
         getDataRei();
         getDataApp();
         getDataReiForm();
+        getDataLineAuth();
+    }
+    //主函数
+    public static void main(String argc[]){
+        init();
         while(true){
             welcome();//主菜单什么的
         }
