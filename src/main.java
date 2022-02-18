@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class main {
@@ -9,7 +10,8 @@ public class main {
     //ArrayLists
     private static ArrayList<ReiStaff> reiStaffs= new ArrayList<>();
     private static ArrayList<AppStaff> appStaffs= new ArrayList<>();
-    //下面是两个输入数据的函数
+    private static HashMap<String,ReiForm> reiForms=new HashMap<>();
+    //下面是输入数据的函数
     private static void getDataRei(){
         try {
             BufferedReader br=new BufferedReader(new FileReader("ReiStaff.txt"));
@@ -36,6 +38,18 @@ public class main {
             e.printStackTrace();
         }
     }
+    private static void getDataReiForm(){
+        try {
+            BufferedReader br=new BufferedReader(new FileReader("ReiForm.txt"));
+            String tmp="";
+            while((tmp=br.readLine())!=null){
+                String[] data=tmp.split(" ");
+                reiForms.put(data[0],new ReiForm(data[0],data[1],data[2],data[3],data[4],data[5]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     //以下是保存系统内容的函数
     private static void saveInfoToFiles(){
         for(int i=0;i<reiStaffs.size();i++){
@@ -43,6 +57,9 @@ public class main {
         }
         for(int i=0;i<appStaffs.size();i++){
             appStaffs.get(i).saveInFile();
+        }
+        for(ReiForm value:reiForms.values()){
+            value.saveInFile();
         }
     }
     //menus
@@ -307,6 +324,7 @@ public class main {
     public static void main(String argc[]){
         getDataRei();
         getDataApp();
+        getDataReiForm();
         while(true){
             welcome();//主菜单什么的
         }
