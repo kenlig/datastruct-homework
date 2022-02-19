@@ -90,6 +90,12 @@ public class main {
         }
         return false;
     }
+    public static boolean isReiForm(int id){
+        for(String i:reiForms.keySet()){
+            if(i.equals("2022"+id)) return true;
+        }
+        return false;
+    }
     //以下是保存系统内容的函数
     private static void saveInfoToFiles(){
         //先清空文件内容

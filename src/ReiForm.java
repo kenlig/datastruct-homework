@@ -33,8 +33,7 @@ public class ReiForm implements FileIO{
         this.appStaff=appStaff;
     }
     public ReiForm(String reiStaff,String money,String reiDate){
-        String idTemp="2022"+countNum;
-        while(main.isReiForm(idTemp)){
+        while(main.isReiForm(countNum)){
             countNum++;
         }
         String id="2022"+countNum;
