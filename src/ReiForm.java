@@ -91,7 +91,7 @@ public class ReiForm implements FileIO{
                 " "+getMoney()+ " "+getReiDate()+
                 " "+getStatus()+ " "+getAppStaff();
         try {
-            BufferedWriter bw=new BufferedWriter(new FileWriter("ReiForm.txt"));
+            BufferedWriter bw=new BufferedWriter(new FileWriter("ReiForm.txt",true));
             bw.write(info);
             bw.newLine();
             bw.close();

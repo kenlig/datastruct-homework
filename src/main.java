@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -65,6 +63,20 @@ public class main {
     }
     //以下是保存系统内容的函数
     private static void saveInfoToFiles(){
+        //先清空文件内容
+        String[] s={"ReiStaff.txt","AppStaff.txt","LineAuth.txt","ReiForm.txt"};
+        for(int i=0;i<4;i++) {
+            File file = new File(s[i]);
+            try {
+                FileWriter fw = new FileWriter(file);
+                fw.write("");
+                fw.flush();
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //再保存
         for(int i=0;i<reiStaffs.size();i++){
             reiStaffs.get(i).saveInFile();
         }
@@ -153,10 +165,10 @@ public class main {
             }
         }
         if(temp==1){
-            getLineAuthInfo();//todo：额度表内容好像不用cud吧
+            getLineAuthInfo();
         }
         else if(temp==2){
-            editLineAuthInfo();//todo
+            editLineAuthInfo();
         }
         else if(temp==0){
             reiManage();
@@ -164,10 +176,34 @@ public class main {
     }
     //查询审批人额度授权表内容
     private static void getLineAuthInfo(){
-
+        System.out.println("审批人额度授权表:");
+        for(LineAuth i:lineAuths.values()){
+            System.out.println(i.getId()+" "+i.getRole()+" "+i.getMoney()+" "+i.getAppStaff());
+        }
+        lineAuthManage();
     }
     //修改审批人额度授权表内容
     private static void editLineAuthInfo(){
+        System.out.println("请输入需要更改的序号:");
+        String tmp="";
+        Scanner scanner=new Scanner(System.in);
+        tmp=scanner.next();
+        for(String i:lineAuths.keySet()){
+            if(i.equals(tmp)){//找到相同的
+                Scanner sc=new Scanner(System.in);
+                System.out.println("请输入第"+i+"条的角色:");
+                String role=sc.next();
+                System.out.println("请输入第"+i+"条的额度:");
+                String money=sc.next();
+                System.out.println("请输入第"+i+"条的审批人:");
+                String appStaff=sc.next();
+                lineAuths.replace(i,new LineAuth(i,role,money,appStaff));
+                System.out.println("修改成功!");
+                lineAuthManage();
+            }
+        }
+        System.out.println("查找失败!");
+        lineAuthManage();
 
     }
     //报销单管理
@@ -180,7 +216,6 @@ public class main {
         System.out.println("5.报销单据查询");
         System.out.println("0.返回上一层");
     }
-
 
 
     //以下是人员管理系统的内容!

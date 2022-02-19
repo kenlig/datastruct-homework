@@ -13,7 +13,7 @@ public class ReiStaff extends Staff implements FileIO{
     public void saveInFile(){
         String info=getId()+" "+getName()+" "+getPhoneNumber();
         try {
-            BufferedWriter bw=new BufferedWriter(new FileWriter("ReiStaff.txt"));
+            BufferedWriter bw=new BufferedWriter(new FileWriter("ReiStaff.txt",true));
             bw.write(info);
             bw.newLine();
             bw.close();

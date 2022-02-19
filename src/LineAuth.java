@@ -31,11 +31,28 @@ public class LineAuth implements FileIO{
     public static int getCountNum() {
         return countNum;
     }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public String getAppStaff() {
+        return appStaff;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     @Override
     public void saveInFile(){
         String info=id+" "+role+" "+money+" "+appStaff;
         try {
-            BufferedWriter bw=new BufferedWriter(new FileWriter("LineAuth.txt"));
+            BufferedWriter bw=new BufferedWriter(new FileWriter("LineAuth.txt",true));
             bw.write(info);
             bw.newLine();
             bw.close();
