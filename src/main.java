@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class main {
     //通用函数
-    //ArrayLists
+    //数据结构定义
     private static ArrayList<ReiStaff> reiStaffs= new ArrayList<>();
     private static ArrayList<AppStaff> appStaffs= new ArrayList<>();
     private static HashMap<String,LineAuth> lineAuths=new HashMap<>();
@@ -60,6 +60,35 @@ public class main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    //下面是查找的函数
+    private static boolean isReiStaff(String id){
+        for(int i=0;i<reiStaffs.size();i++){
+            if(reiStaffs.get(i).getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private static boolean isAppStaff(String id){
+        for(int i=0;i<appStaffs.size();i++){
+            if(appStaffs.get(i).getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private static boolean isLineAuth(String id){
+        for(String i:lineAuths.keySet()){
+            if(i.equals(id)) return true;
+        }
+        return false;
+    }
+    public static boolean isReiForm(String id){
+        for(String i:reiForms.keySet()){
+            if(i.equals(id)) return true;
+        }
+        return false;
     }
     //以下是保存系统内容的函数
     private static void saveInfoToFiles(){
@@ -215,8 +244,215 @@ public class main {
         System.out.println("4.修改报销单");
         System.out.println("5.报销单据查询");
         System.out.println("0.返回上一层");
+        int temp = -1;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=scanner.nextInt();
+            if(temp!=1&&temp!=2&&temp!=0&&temp!=3&&temp!=4&&temp!=5){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            getReiFormInfo();
+        }
+        else if(temp==2){
+            createReiForm();
+        }
+        else if(temp==3){
+            approveReiForm();
+        }
+        else if(temp==4){
+            editReiForm();
+        }
+        else if(temp==5){
+            getReiForm();
+        }
+        else if(temp==0){
+            reiManage();
+        }
     }
-
+    //查看报销单列表
+    private static void getReiFormInfo(){
+        System.out.println("报销单列表:");
+        for(ReiForm i:reiForms.values()){
+            System.out.println(i.getId()+" "+i.getReiStaff()+" "+
+                    i.getMoney()+" "+i.getReiDate()+" "+i.getStatus()+" "+i.getAppStaff());
+        }
+        reiFormManage();
+    }
+    //创建报销单
+    private static void createReiForm(){
+        System.out.println("创建报销单:");
+        System.out.println("请输入你的工号:");
+        Scanner sc=new Scanner(System.in);
+        String id=sc.next();
+        if(!isReiStaff(id)){
+            System.out.println("您的工号不存在!");
+            reiFormManage();
+        }
+        System.out.println("请输入你的提单金额:");
+        String money=sc.next();
+        System.out.println("请输入你的提单日期:");
+        String date=sc.next();
+        ReiForm temp=new ReiForm(id,money,date);
+        String reiId=temp.getId();
+        reiForms.put(reiId,temp);
+        reiFormManage();
+    }
+    //审批报销单
+    private static void approveReiForm(){
+        System.out.println("审批报销单:");
+        System.out.println("请输入你的工号:");
+        Scanner sc=new Scanner(System.in);
+        String id=sc.next();
+        if(!isAppStaff(id)){
+            System.out.println("对不起,您没有审批权限或不是审批人员!");
+            reiFormManage();
+        }
+        //step1:找能审批的金额数
+        int number=numberApproved(id);
+        //step2:找到这个人对应的权限
+        int permission=perApproved(id);
+        //step3:根据钱数筛选能审核的报销单,满足status=1且金额够的
+        getListOfRei(number,permission);
+        System.out.println("请输入你要审批的报销单编号:");
+        String tmp=sc.next();
+        System.out.println("请选择操作:");
+        System.out.println("1.报销单通过");
+        System.out.println("2.报销单驳回");
+        int temp;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=sc.nextInt();
+            if(temp!=1&&temp!=2){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            for(ReiForm i:reiForms.values()){
+                if(i.getId().equals(tmp)){
+                    i.acceptReiForm(id);
+                }
+            }
+        }
+        else if(temp==2){
+            for(ReiForm i:reiForms.values()){
+                if(i.getId().equals(tmp)){
+                    i.rejectReiForm();
+                }
+            }
+        }
+        reiFormManage();
+    }
+    //查找工号为id的人能审核多少钱的单子
+    private static int numberApproved(String id){
+        for(LineAuth i:lineAuths.values()){
+            if(i.getAppStaff().equals(id)){
+                return i.getMoneyInt();
+            }
+        }
+        return 0;
+    }
+    //找到工号为id的人的权限
+    private static int perApproved(String id){
+        for(int i=0;i<appStaffs.size();i++){
+            if(appStaffs.get(i).getId().equals(id)){
+                return appStaffs.get(i).getPermission();
+            }
+        }
+        return 0;
+    }
+    //显示在某个钱数之下且为某个权限所确定的
+    private static void getListOfRei(int money,int permission){
+        for(ReiForm i:reiForms.values()){
+            if(i.getMoneyInt()<=money&&i.getStatusNum()==permission){//钱数小于他能审批的并且处于状态
+                System.out.println(i.getId()+" "+i.getReiStaff()+" "+
+                        i.getMoney()+" "+i.getStatus()+" "+i.getAppStaff());
+            }
+        }
+    }
+    //修改报销单
+    private static void editReiForm(){
+        System.out.println("修改报销单.注意,这会让报销单的审核状态归零!");
+        System.out.println("请输入报销单编号:");
+        Scanner sc=new Scanner(System.in);
+        String temp=sc.next();
+        for(String i:reiForms.keySet()){//这是key
+            if(i.equals(temp)){
+                System.out.println("请输入报销单的提单人:");
+                String reiStaff=sc.next();
+                System.out.println("请输入报销单的提单金额:");
+                String money=sc.next();
+                System.out.println("请输入报销单的提单日期:");
+                String date=sc.next();
+                reiForms.replace(i,new ReiForm(temp,reiStaff,money,date));
+                System.out.println("修改成功!");
+                reiFormManage();
+            }
+        }
+        System.out.println("修改失败!");
+        reiFormManage();
+    }
+    //报销单据查询
+    private static void getReiForm(){
+        System.out.println("报销单据查询,支持输入提单人信息或报销单编号.");
+        System.out.println("1.根据提单人信息查询");
+        System.out.println("2.根据报销单编号查询");
+        System.out.println("0.返回上一层");
+        System.out.println("请选择:");
+        int temp = -1;
+        while(true){
+            Scanner scanner=new Scanner(System.in);
+            temp=scanner.nextInt();
+            if(temp!=1&&temp!=2&&temp!=0){
+                System.out.println("输入不合法,请重新输入!");
+            }
+            else{
+                break;
+            }
+        }
+        if(temp==1){
+            selectByReiStaff();
+        }
+        else if(temp==2){
+            selectById();
+        }
+        else if(temp==0){
+            reiFormManage();
+        }
+    }
+    //根据提单人信息查询
+    private static void selectByReiStaff(){
+        System.out.println("请输入提单人的工号:");
+        Scanner sc=new Scanner(System.in);
+        String temp=sc.next();
+        for(ReiForm i:reiForms.values()){
+            if(i.getReiStaff().equals(temp)){
+                System.out.println(i.getId()+" "+i.getReiStaff()+" "+
+                        i.getMoney()+" "+i.getReiDate()+" "+i.getStatus()+" "+i.getAppStaff());
+            }
+        }
+        getReiForm();
+    }
+    //根据报销单号查询
+    private static void selectById(){
+        System.out.println("请输入报销单编号:");
+        Scanner sc=new Scanner(System.in);
+        String temp=sc.next();
+        for(ReiForm i:reiForms.values()){
+            if(i.getId().equals(temp)){
+                System.out.println(i.getId()+" "+i.getReiStaff()+" "+
+                        i.getMoney()+" "+i.getReiDate()+" "+i.getStatus()+" "+i.getAppStaff());
+            }
+        }
+        getReiForm();
+    }
 
     //以下是人员管理系统的内容!
     private static void peopleManage() {//人员管理系统
@@ -285,8 +521,8 @@ public class main {
         System.out.println("报销人员的信息为:");
         for(int i=0;i<reiStaffs.size();i++){
             System.out.println("工号:"+reiStaffs.get(i).getId()+
-                            " 姓名:"+reiStaffs.get(i).getName() +
-                            " 手机号:"+reiStaffs.get(i).getPhoneNumber());
+                    " 姓名:"+reiStaffs.get(i).getName() +
+                    " 手机号:"+reiStaffs.get(i).getPhoneNumber());
         }
         reiStaffManage();
     }

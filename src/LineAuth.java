@@ -35,7 +35,9 @@ public class LineAuth implements FileIO{
     public String getMoney() {
         return money;
     }
-
+    public int getMoneyInt(){
+        return Integer.parseInt(money);
+    }
     public String getAppStaff() {
         return appStaff;
     }
