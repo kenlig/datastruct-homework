@@ -10,6 +10,7 @@ public class main {
     private static ArrayList<AppStaff> appStaffs= new ArrayList<>();
     private static HashMap<String,LineAuth> lineAuths=new HashMap<>();
     private static HashMap<String,ReiForm> reiForms=new HashMap<>();
+    private static String peopleId="";
     //下面是输入数据的函数
     private static void getDataRei(){
         try {
@@ -126,8 +127,29 @@ public class main {
         }
     }
     //menus
-    private static void welcome(){//主菜单
+    private static void login(){//登录
         System.out.println("欢迎使用财务报销管理系统,请输入你要执行的操作编号.");
+        System.out.println("请输入你的工号:");
+        String tmp="";
+        Scanner scanner=new Scanner(System.in);
+        tmp=scanner.next();
+        if(isReiStaff(tmp)||isAppStaff(tmp)){
+            System.out.println("登陆成功!");
+            peopleId=tmp;
+            welcome();
+        }
+        else{
+            System.out.println("登陆失败!请重新登录.");
+            login();
+        }
+    }
+    private static void logout(){//注销
+        System.out.println("注销成功!正在保存数据.");
+        saveInfoToFiles();
+        peopleId="";
+        login();
+    }
+    private static void welcome(){//主菜单
         System.out.println("1.人员管理");
         System.out.println("2.报销管理");
         System.out.println("0.退出系统");
@@ -242,7 +264,7 @@ public class main {
 
     }
     //报销单管理
-    private static void reiFormManage() {//todo:还没做完！
+    private static void reiFormManage() {
         System.out.println("报销单管理:");
         System.out.println("1.查看报销单列表");
         System.out.println("2.创建报销单");
@@ -292,9 +314,9 @@ public class main {
     //创建报销单
     private static void createReiForm(){
         System.out.println("创建报销单:");
-        System.out.println("请输入你的工号:");
+        //System.out.println("请输入你的工号:");
         Scanner sc=new Scanner(System.in);
-        String id=sc.next();
+        String id=peopleId;
         if(!isReiStaff(id)){
             System.out.println("您的工号不存在!");
             reiFormManage();
@@ -311,9 +333,9 @@ public class main {
     //审批报销单
     private static void approveReiForm(){
         System.out.println("审批报销单:");
-        System.out.println("请输入你的工号:");
+        //System.out.println("请输入你的工号:");
         Scanner sc=new Scanner(System.in);
-        String id=sc.next();
+        String id=peopleId;
         if(!isAppStaff(id)){
             System.out.println("对不起,您没有审批权限或不是审批人员!");
             reiFormManage();
@@ -558,14 +580,14 @@ public class main {
         Scanner scanner=new Scanner(System.in);
         temp=scanner.next();
         for(int i=0;i<reiStaffs.size();i++){
-            if(reiStaffs.get(i).getId().equals(temp)){
+            if(reiStaffs.get(i).getId().equals(temp)){//查找并匹配ID
                 System.out.println("请输入"+temp+"的新姓名:");
                 Scanner scannerId=new Scanner(System.in);
                 String name=scannerId.next();
                 System.out.println("请输入"+temp+"的新手机号:");
                 String phoneNumber=scannerId.next();
-                ReiStaff tempRei=new ReiStaff(temp,name,phoneNumber);
-                reiStaffs.set(i,tempRei);
+                ReiStaff tempRei=new ReiStaff(temp,name,phoneNumber);//直接新建一个对象
+                reiStaffs.set(i,tempRei);//把原来的对象换成新的
                 System.out.println("修改成功!");
                 reiStaffManage();
             }
@@ -580,7 +602,7 @@ public class main {
         Scanner scanner=new Scanner(System.in);
         temp=scanner.next();
         for(int i=0;i<reiStaffs.size();i++){
-            if(reiStaffs.get(i).getId().equals(temp)){
+            if(reiStaffs.get(i).getId().equals(temp)){//查找并匹配id
                 reiStaffs.remove(i);
                 System.out.println("删除成功!");
                 reiStaffManage();
@@ -708,7 +730,7 @@ public class main {
     public static void main(String argc[]){
         init();
         while(true){
-            welcome();//主菜单什么的
+            login();//主菜单什么的
         }
     }
 }
